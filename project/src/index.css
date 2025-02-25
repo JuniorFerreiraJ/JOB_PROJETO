@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #FFD700;    /* Amarelo */
+  --color-secondary: #1A1A1A;  /* Preto */
+  --color-accent: #4A4A4A;     /* Cinza Chumbo */
+}
+
+body {
+  background-color: #2A2A2A;
+}
+
+.btn-primary {
+  @apply bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded transition-colors duration-200;
+}
+
+.btn-secondary {
+  @apply bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200;
+}
+
+.card {
+  @apply bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden;
+}
+
+.input-field {
+  @apply bg-gray-700 border-gray-600 text-white rounded-md focus:ring-yellow-400 focus:border-yellow-400;
+}
