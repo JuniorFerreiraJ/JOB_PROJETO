@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Calendar, Users, ClipboardList, UserCog, LogOut } from 'lucide-react';
+import { Calendar, Users, ClipboardList, UserCog, LogOut, Building2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface SidebarProps {
@@ -12,8 +12,8 @@ export default function Sidebar({ onLogout }: SidebarProps) {
   const { profile } = useAuth();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: ClipboardList },
-    { name: 'Auditores', href: '/auditors', icon: Users },
+    { name: 'Painel', href: '/', icon: ClipboardList },
+    { name: 'Clientes', href: '/clients', icon: Building2 },
     { name: 'Calendário', href: '/calendar', icon: Calendar },
   ];
 

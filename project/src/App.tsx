@@ -3,13 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
-import AuditorList from './pages/AuditorList';
+import ClientList from './pages/ClientList';
 import AuditCalendar from './pages/AuditCalendar';
 import AuditForm from './pages/AuditForm';
 import AuditDetails from './pages/AuditDetails';
 import ReportForm from './pages/ReportForm';
 import AuditorManagement from './pages/AuditorManagement';
+import ClientForm from './pages/ClientForm';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -49,6 +51,7 @@ function App() {
         />
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           
           <Route
             path="/"
@@ -59,7 +62,9 @@ function App() {
             }
           >
             <Route index element={<Dashboard />} />
-            <Route path="auditors" element={<AuditorList />} />
+            <Route path="clients" element={<ClientList />} />
+            <Route path="clients/new" element={<AdminRoute><ClientForm /></AdminRoute>} />
+            <Route path="clients/:id" element={<AdminRoute><ClientForm /></AdminRoute>} />
             <Route path="calendar" element={<AuditCalendar />} />
             <Route path="audits/new" element={<AuditForm />} />
             <Route path="audits/:id" element={<AuditDetails />} />

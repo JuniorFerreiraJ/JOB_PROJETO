@@ -11,10 +11,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true,
+    detectSessionInUrl: false,
     storage: localStorage,
-    storageKey: 'job-audit-auth',
-    flowType: 'pkce'
+    storageKey: 'job-audit-auth'
   }
 });
 

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, startOfWeek, endOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { getStatusEmoji, deleteAudit } from '../lib/notifications';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Audit {
   id: string;
@@ -13,6 +14,7 @@ interface Audit {
   scheduled_date: string;
   status: string;
   location: string;
+  auditor_id: string;
 }
 
 export default function AuditCalendar() {
@@ -25,14 +27,22 @@ export default function AuditCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<'calendar' | 'list'>('calendar');
   const navigate = useNavigate();
+  const { profile } = useAuth();
 
   const loadAudits = useCallback(async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('audits')
         .select('*')
         .order('scheduled_date', { ascending: true });
+
+      // If user is not admin, only show their audits
+      if (profile?.role !== 'admin') {
+        query = query.eq('auditor_id', profile?.id);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setAudits(data || []);
@@ -42,7 +52,7 @@ export default function AuditCalendar() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [profile]);
 
   useEffect(() => {
     loadAudits();
@@ -114,12 +124,14 @@ export default function AuditCalendar() {
       {/* Header and filters */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Calendário de Auditorias</h1>
-        <button
-          onClick={() => navigate('/audits/new')}
-          className="px-4 py-2 text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-colors duration-200"
-        >
-          Nova Auditoria
-        </button>
+        {profile?.role === 'admin' && (
+          <button
+            onClick={() => navigate('/audits/new')}
+            className="px-4 py-2 text-sm font-medium text-black bg-yellow-400 hover:bg-yellow-500 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-colors duration-200"
+          >
+            Nova Auditoria
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
@@ -277,13 +289,15 @@ export default function AuditCalendar() {
                 >
                   <Eye className="h-5 w-5 text-yellow-400" />
                 </button>
-                <button
-                  onClick={() => setConfirmDelete(audit.id)}
-                  className="p-2 hover:bg-red-400/10 rounded-full transition-colors duration-200"
-                  title="Excluir auditoria"
-                >
-                  <Trash2 className="h-5 w-5 text-red-400" />
-                </button>
+                {profile?.role === 'admin' && (
+                  <button
+                    onClick={() => setConfirmDelete(audit.id)}
+                    className="p-2 hover:bg-red-400/10 rounded-full transition-colors duration-200"
+                    title="Excluir auditoria"
+                  >
+                    <Trash2 className="h-5 w-5 text-red-400" />
+                  </button>
+                )}
               </div>
             </div>
           ))}
